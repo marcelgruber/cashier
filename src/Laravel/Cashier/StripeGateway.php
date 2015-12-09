@@ -257,6 +257,24 @@ class StripeGateway
             return false;
         }
     }
+    
+    /**
+     * Invoice the billable entity outside of regular billing cycle, without requiring immediate payment.
+     *
+     * @return bool
+     */
+    public function invoiceWithoutImmediatePayment()
+    {
+        try {
+            $customer = $this->getStripeCustomer();
+
+            StripeInvoice::create(['customer' => $customer->id], $this->getStripeKey());
+
+            return true;
+        } catch (StripeErrorInvalidRequest $e) {
+            return false;
+        }
+    }
 
     /**
      * Find an invoice by ID.
